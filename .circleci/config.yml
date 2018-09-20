@@ -5,19 +5,16 @@
 
 workflows:
     version: 2
-    workflow1:
+    php_mysql_testing:
         jobs:
             - build
-    workflow2:
-        jobs:
-            - nada
 
 version: 2
 jobs:
   build:
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.2
+      - image: circleci/php:7.2.10-apache-node-browsers
         # environment:
         #   MYSQL_HOST: 127.0.0.1
         #   MYSQL_DATABASE: circle_test
@@ -27,14 +24,16 @@ jobs:
 
 
       - image: mysql:8
-        # command: mysqld
+        command: |
+            echo "HALLO WLAD!"
+
         environment:
             MYSQL_HOST: 127.0.0.1
-            MYSQL_DATABASE: circle_test
+            MYSQL_DATABASE: circleci
             MYSQL_USER: root
             MYSQL_ALLOW_EMPTY_PASSWORD: true
-            MYSQL_ROOT_PASSWORD: ''
-            MYSQL_PASSWORD: ''
+            MYSQL_ROOT_PASSWORD: pass
+            MYSQL_PASSWORD: pass
 
     # working_directory: ~/laravel
 
@@ -66,7 +65,7 @@ jobs:
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
-            - ~/laravel
+            - ~/project
 
       # node cache
 
@@ -88,7 +87,7 @@ jobs:
 
       - run:
           name: Create Mysql Database
-          command: mysql  -h 127.0.0.1 -u root -e "create database circleci;"
+          command: mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
 
       - run: cp .env.example .env
       # - run: php artisan migrate
@@ -105,8 +104,3 @@ jobs:
       #     path: tests/_output
       # - store_artifacts:
       #     path: tests/_output
-  nada:
-      docker:
-          - image: busybox
-      steps:
-          - run: echo "Hello PHP!"
