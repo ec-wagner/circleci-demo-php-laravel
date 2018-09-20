@@ -36,7 +36,7 @@ jobs:
             # MYSQL_DATABASE: circleci
             # MYSQL_USER: root
             # MYSQL_ALLOW_EMPTY_PASSWORD: true
-            # MYSQL_ROOT_PASSWORD: pass
+            MYSQL_ROOT_PASSWORD: ''
             # MYSQL_PASSWORD: pass
 
     # working_directory: ~/laravel
