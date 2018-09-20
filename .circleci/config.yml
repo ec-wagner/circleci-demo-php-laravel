@@ -30,9 +30,6 @@ jobs:
         #     sleep 2
         #     ps aux | grep mysql
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
-        command: |
-            dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
-            mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
 
         environment:
             # MYSQL_HOST: 127.0.0.1
