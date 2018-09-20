@@ -5,10 +5,10 @@
 
 workflows:
     version: 2
-    workflow:
+    workflow1:
         jobs:
             - build
-    workflow:
+    workflow2:
         jobs:
             - nada
 
@@ -107,6 +107,6 @@ jobs:
       #     path: tests/_output
   nada:
       docker:
-          -image: busybox
+          - image: busybox
       steps:
           - run: echo "Hello PHP!"
