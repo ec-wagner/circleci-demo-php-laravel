@@ -23,14 +23,14 @@ jobs:
           MYSQL_ROOT_PASSWORD: ''
 
 
-      - image: circleci/mysql:8
+      - image: circleci/mysql:8.0.12
         # command: |
         #     sudo sh -c "echo 'pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock' > /usr/local/etc/php/conf.d/pdo.ini"
         #     sudo service mysql start
         #     sleep 2
         #     ps aux | grep mysql
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
-
+        command: mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
         environment:
             # MYSQL_HOST: 127.0.0.1
             # MYSQL_DATABASE: circleci
@@ -83,17 +83,17 @@ jobs:
       #     paths:
       #       - ~/project/node_modules
       #       - ~/.yarn
-
+      - run: cp .env.example .env
       # prepare the database
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
 
-      - run:
-          name: Create Mysql Database
-          command: mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
+      # - run:
+      #     name: Create Mysql Database
+      #     command: mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
 
-      - run: cp .env.example .env
+
       # - run: php artisan migrate
       # - run: mkdir -p build/logs
       # - run: php vendor/bin/phpunit tests/ --coverage-clover build/logs/clover.xml
