@@ -2,28 +2,41 @@
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
+
+workflows:
+    version: 2
+    workflow:
+        jobs:
+            - build
+    workflow:
+        jobs:
+            - nada
+
 version: 2
 jobs:
   build:
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DATABASE: circle_test
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
+      - image: circleci/php:7.2
+        # environment:
+        #   MYSQL_HOST: 127.0.0.1
+        #   MYSQL_DATABASE: circle_test
+        #   MYSQL_USER: root
+        #   MYSQL_ALLOW_EMPTY_PASSWORD: true
+        #   MYSQL_ROOT_PASSWORD: ''
 
-      - image: mysql:5.7
-        command: mysqld
+
+      - image: mysql:8
+        # command: mysqld
         environment:
             MYSQL_HOST: 127.0.0.1
             MYSQL_DATABASE: circle_test
             MYSQL_USER: root
             MYSQL_ALLOW_EMPTY_PASSWORD: true
+            MYSQL_ROOT_PASSWORD: ''
+            MYSQL_PASSWORD: ''
 
-    working_directory: ~/laravel
+    # working_directory: ~/laravel
 
     steps:
       - checkout
@@ -92,3 +105,8 @@ jobs:
       #     path: tests/_output
       # - store_artifacts:
       #     path: tests/_output
+  nada:
+      docker:
+          -image: busybox
+      steps:
+          - run: echo "Hello PHP!"
