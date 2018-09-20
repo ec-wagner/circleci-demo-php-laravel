@@ -73,16 +73,16 @@ jobs:
 
       # node cache
 
-      - restore_cache:
-          keys:
-            - node-v3-{{ checksum "package.json" }}
-            - node-v3-
-      - run: yarn install
-      - save_cache:
-          key: node-v3-{{ checksum "package.json" }}
-          paths:
-            - ~/project/node_modules
-            - ~/.yarn
+      # - restore_cache:
+      #     keys:
+      #       - node-v3-{{ checksum "package.json" }}
+      #       - node-v3-
+      # - run: yarn install
+      # - save_cache:
+      #     key: node-v3-{{ checksum "package.json" }}
+      #     paths:
+      #       - ~/project/node_modules
+      #       - ~/.yarn
 
       # prepare the database
       - run:
