@@ -53,7 +53,7 @@ jobs:
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
-            - vendor
+            - ~/laravel
 
       # node cache
 
