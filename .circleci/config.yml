@@ -31,7 +31,7 @@ jobs:
         #     ps aux | grep mysql
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
         command: |
-            sudo apt install php7.2-mysql
+            apt install php7.2-mysql
             mysqld
 
         # environment:
