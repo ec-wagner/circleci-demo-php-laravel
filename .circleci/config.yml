@@ -16,11 +16,11 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.2.10-apache-node-browsers
         environment:
-          MYSQL_HOST: 127.0.0.1
+          # MYSQL_HOST: 127.0.0.1
         #   MYSQL_DATABASE: circle_test
         #   MYSQL_USER: root
         #   MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
+          # MYSQL_ROOT_PASSWORD: ''
 
 
       - image: circleci/mysql:5.7
@@ -32,12 +32,12 @@ jobs:
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
 
         environment:
-            # MYSQL_HOST: 127.0.0.1
-            # MYSQL_DATABASE: circleci
-            # MYSQL_USER: root
-            # MYSQL_ALLOW_EMPTY_PASSWORD: true
+            MYSQL_HOST: 127.0.0.1
+            MYSQL_DATABASE: circleci
+            MYSQL_USER: root
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
             MYSQL_ROOT_PASSWORD: ''
-            # MYSQL_PASSWORD: pass
+            MYSQL_PASSWORD: ''
 
     # working_directory: ~/laravel
 
