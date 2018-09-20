@@ -7,34 +7,46 @@ jobs:
   build:
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.1-jessie-node-browsers
+      - image: circleci/php:7.1-node-browsers
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: testing
+          MYSQL_USER: testing
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD: testing
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      # 
-      # - image: redis:2.8.19
+      - image: mysql:5.7
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
+
+        environment:
+            MYSQL_USER: testing
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
+
+    working_directory: ~/laravel
 
     steps:
       - checkout
-
-      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
       - run: sudo docker-php-ext-install zip
 
       # Download and cache dependencies
 
       # composer cache
+
       - restore_cache:
           keys:
-          # "composer.lock" can be used if it is committed to the repo
-          - v1-dependencies-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v1-
+
+      # - restore_cache:
+      #     keys:
+      #     # "composer.lock" can be used if it is committed to the repo
+      #     - v1-dependencies-{{ checksum "composer.json" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
 
       - run: composer install -n --prefer-dist
+      # - run: composer install --dev --ignore-platform-reqs
 
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
@@ -55,14 +67,21 @@ jobs:
             - ~/.yarn
 
       # prepare the database
-      - run: touch storage/testing.sqlite
-      - run: php artisan migrate --env=testing --database=sqlite_testing --force
+      - run:
+          name: Create Mysql Database
+          command: mysql  -h 127.0.0.1 -u root -e "create database testing;"
 
-      # run tests with phpunit or codecept
-      #- run: ./vendor/bin/phpunit
-      - run: ./vendor/bin/codecept build
-      - run: ./vendor/bin/codecept run --xml result.xml
-      - store_test_results:
-          path: tests/_output
-      - store_artifacts:
-          path: tests/_output
+      # - run: php artisan migrate
+      # - run: mkdir -p build/logs
+      # - run: php vendor/bin/phpunit tests/ --coverage-clover build/logs/clover.xml
+      # - run: php vendor/bin/phpcbf --standard=ruleset.xml app/
+      # - run: php vendor/bin/phpcs --standard=ruleset.xml app/
+
+      # # run tests with phpunit or codecept
+      # #- run: ./vendor/bin/phpunit
+      # - run: ./vendor/bin/codecept build
+      # - run: ./vendor/bin/codecept run --xml result.xml
+      # - store_test_results:
+      #     path: tests/_output
+      # - store_artifacts:
+      #     path: tests/_output
