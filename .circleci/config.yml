@@ -15,12 +15,12 @@ jobs:
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.2.10-apache-node-browsers
-        # environment:
-        #   MYSQL_HOST: 127.0.0.1
+        environment:
+          MYSQL_HOST: 127.0.0.1
         #   MYSQL_DATABASE: circle_test
         #   MYSQL_USER: root
         #   MYSQL_ALLOW_EMPTY_PASSWORD: true
-        #   MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: ''
 
 
       - image: circleci/mysql:8
@@ -81,7 +81,7 @@ jobs:
       - save_cache:
           key: node-v3-{{ checksum "package.json" }}
           paths:
-            - node_modules
+            - ~/project/node_modules
             - ~/.yarn
 
       # prepare the database
