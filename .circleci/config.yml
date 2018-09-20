@@ -30,6 +30,9 @@ jobs:
         #     sleep 2
         #     ps aux | grep mysql
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
+        command: |
+            sudo apt install php7.2-mysql
+            mysqld
 
         # environment:
         #     MYSQL_HOST: 127.0.0.1
