@@ -20,7 +20,7 @@ jobs:
           MYSQL_DATABASE: circle_test
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
+          # MYSQL_ROOT_PASSWORD: ''
 
 
       - image: circleci/mysql:5.7
@@ -31,7 +31,7 @@ jobs:
         #     ps aux | grep mysql
         #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
         command: |
-            apt install php7.2-mysql
+            apt install php7.1-mysql
             mysqld
 
         # environment:
