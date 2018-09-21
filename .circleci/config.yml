@@ -46,8 +46,8 @@ jobs:
     steps:
       - checkout
       - run: cp .env.example .env
-      - run: sudo apt install -y mysql-client
-      - run: sudo docker-php-ext-install pdo_mysql
+      # - run: sudo apt install -y mysql-client
+      # - run: sudo docker-php-ext-install pdo_mysql
       - run: sudo apt install -y nano
       # - run: sudo composer selfupdate
       # - run: sudo apt install -y libsqlite3-dev zlib1g-dev
