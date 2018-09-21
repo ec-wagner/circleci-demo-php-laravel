@@ -46,12 +46,15 @@ jobs:
     steps:
       - checkout
       - run: cp .env.example .env
-      # - run: sudo apt install -y mysql-client
+      # THIS IS IMPORTANT for 'php artisan migrate' to work
       - run: sudo docker-php-ext-install pdo_mysql
-      - run: sudo apt install -y nano
+      # - run: sudo apt install -y nano
       # - run: sudo composer selfupdate
-      # - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-      # - run: sudo docker-php-ext-install zip
+      # A (MySQL)-Client is required to create databases and db_users
+      # - run: sudo apt install -y mysql-client
+      # - run: mysql -u root -e "CREATE DATABASE testdatabase"
+      # - run: mysql -u root -e "CREATE USER myuser IDENTIFIED BY 'password';"
+
 
       # Download and cache dependencies
 
