@@ -14,13 +14,14 @@ jobs:
   build:
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.2.10-apache-node-browsers
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DATABASE: circle_test
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          # MYSQL_ROOT_PASSWORD: ''
+      # - image: circleci/php:7.2.10-apache-node-browsers
+      - image: circleci/mysql:5.7
+        # environment:
+        #   MYSQL_HOST: 127.0.0.1
+        #   MYSQL_DATABASE: circle_test
+        #   MYSQL_USER: root
+        #   MYSQL_ALLOW_EMPTY_PASSWORD: true
+        #   # MYSQL_ROOT_PASSWORD: ''
 
 
       - image: circleci/mysql:5.7
@@ -47,47 +48,47 @@ jobs:
     steps:
       - checkout
       - run: sudo apt install -y mysql-client
-      # - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-      # - run: sudo docker-php-ext-install zip
-
-      # Download and cache dependencies
-
-      # composer cache
-
-      - restore_cache:
-          keys:
-            - composer-v1-{{ checksum "composer.lock" }}
-            - composer-v1-
-
+      # # - run: sudo apt install -y libsqlite3-dev zlib1g-dev
+      # # - run: sudo docker-php-ext-install zip
+      #
+      # # Download and cache dependencies
+      #
+      # # composer cache
+      #
       # - restore_cache:
       #     keys:
-      #     # "composer.lock" can be used if it is committed to the repo
-      #     - v1-dependencies-{{ checksum "composer.json" }}
-      #     # fallback to using the latest cache if no exact match is found
-      #     - v1-dependencies-
-
-      - run: composer install -n --prefer-dist
-      # - run: composer install --dev --ignore-platform-reqs
-
-      - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
-          paths:
-            - ~/project
-
-      # node cache
-
-      # - restore_cache:
-      #     keys:
-      #       - node-v3-{{ checksum "package.json" }}
-      #       - node-v3-
-      # - run: yarn install
+      #       - composer-v1-{{ checksum "composer.lock" }}
+      #       - composer-v1-
+      #
+      # # - restore_cache:
+      # #     keys:
+      # #     # "composer.lock" can be used if it is committed to the repo
+      # #     - v1-dependencies-{{ checksum "composer.json" }}
+      # #     # fallback to using the latest cache if no exact match is found
+      # #     - v1-dependencies-
+      #
+      # - run: composer install -n --prefer-dist
+      # # - run: composer install --dev --ignore-platform-reqs
+      #
       # - save_cache:
-      #     key: node-v3-{{ checksum "package.json" }}
+      #     key: composer-v1-{{ checksum "composer.lock" }}
       #     paths:
-      #       - ~/project/node_modules
-      #       - ~/.yarn
-      - run: cp .env.example .env
-      # prepare the database
+      #       - ~/project
+      #
+      # # node cache
+      #
+      # # - restore_cache:
+      # #     keys:
+      # #       - node-v3-{{ checksum "package.json" }}
+      # #       - node-v3-
+      # # - run: yarn install
+      # # - save_cache:
+      # #     key: node-v3-{{ checksum "package.json" }}
+      # #     paths:
+      # #       - ~/project/node_modules
+      # #       - ~/.yarn
+      # - run: cp .env.example .env
+      # # prepare the database
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
