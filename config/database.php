@@ -60,10 +60,10 @@ return [
 
 		'mysql' => [
 			'driver'    => 'mysql',
-			'host'      => env('MYSQL_HOST', '127.0.0.1'),
-			'database'  => env('MYSQL_DATABASE', 'circle_test'),
-			'username'  => env('MYSQL_USERNAME', 'root'),
-			'password'  => env('MYSQL_PASSWORD', ''),
+			'host'      => env('DB_HOST', '127.0.0.1'),
+			'database'  => env('DB_DATABASE', 'circle_test'),
+			'username'  => env('DB_USERNAME', 'root'),
+			'password'  => env('DB_PASSWORD', ''),
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
