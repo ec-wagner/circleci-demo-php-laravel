@@ -25,7 +25,7 @@ jobs:
           MYSQL_PASSWORD: ''
 
 
-      - image: circleci/mysql:8
+      - image: circleci/mariadb:10.0
         # command: |
         #     sudo sh -c "echo 'pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock' > /usr/local/etc/php/conf.d/pdo.ini"
         #     sudo service mysql start
