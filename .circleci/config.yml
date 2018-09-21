@@ -11,105 +11,87 @@ workflows:
 
 version: 2
 jobs:
-  build:
-    docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.2.10-apache-node-browsers
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_PORT: 3306
-          MYSQL_DATABASE: circle_test
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_PASSWORD: ''
+    build:
+        docker:
+            # RUNTIME CONTAINER
+            - image: circleci/php:7.2.10-apache-node-browsers
+              environment:
+                MYSQL_HOST: 127.0.0.1
+                MYSQL_PORT: 3306
+                MYSQL_DATABASE: circle_test
+                MYSQL_USER: root
+                MYSQL_ALLOW_EMPTY_PASSWORD: true
+                MYSQL_ROOT_PASSWORD: ''
+                MYSQL_PASSWORD: ''
+
+            # DATABASE CONTAINER
+            - image: circleci/mariadb:10.0
 
 
-      - image: circleci/mariadb:10.0
-        # command: |
-        #     sudo sh -c "echo 'pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock' > /usr/local/etc/php/conf.d/pdo.ini"
-        #     sudo service mysql start
-        #     sleep 2
-        #     ps aux | grep mysql
-        #     sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
+        steps:
+            - checkout
+            - run: cp .env.example .env
 
-        # environment:
-        #     MYSQL_HOST: 127.0.0.1
-        #     MYSQL_DATABASE: circleci
-        #     MYSQL_USER: root
-        #     MYSQL_ALLOW_EMPTY_PASSWORD: true
-        #     MYSQL_ROOT_PASSWORD: ''
-        #     MYSQL_PASSWORD: ''
+            # THIS IS IMPORTANT for 'php artisan migrate' to work
+            - run: sudo docker-php-ext-install pdo_mysql
+            # - run: sudo composer selfupdate
 
-    # working_directory: ~/laravel
-
-    steps:
-      - checkout
-      - run: cp .env.example .env
-      # THIS IS IMPORTANT for 'php artisan migrate' to work
-      - run: sudo docker-php-ext-install pdo_mysql
-      # - run: sudo apt install -y nano
-      # - run: sudo composer selfupdate
-      # A (MySQL)-Client is required to create databases and db_users
-      # - run: sudo apt install -y mysql-client
-      # - run: mysql -u root -e "CREATE DATABASE testdatabase"
-      # - run: mysql -u root -e "CREATE USER myuser IDENTIFIED BY 'password';"
+            # A (MySQL)-Client is required to create databases and db_users
+            # - run: sudo apt install -y mysql-client
+            # - run: mysql -u root -e "CREATE DATABASE testdatabase"
+            # - run: mysql -u root -e "CREATE USER myuser IDENTIFIED BY 'password';"
 
 
-      # Download and cache dependencies
+            # Download and cache dependencies
 
-      # composer cache
+            # COMPOSER CACHE
+            - restore_cache:
+                keys:
+                    - composer-v1-{{ checksum "composer.lock" }}
+                    - composer-v1-
+            # - restore_cache:
+            #     keys:
+            #     # "composer.lock" can be used if it is committed to the repo
+            #     - v1-dependencies-{{ checksum "composer.json" }}
+            #     # fallback to using the latest cache if no exact match is found
+            #     - v1-dependencies-
+            - run: composer install -n --prefer-dist
+            - save_cache:
+                key: composer-v1-{{ checksum "composer.lock" }}
+                paths:
+                    - ~/project
 
-      # - restore_cache:
-      #     keys:
-      #       - composer-v1-{{ checksum "composer.lock" }}
-      #       - composer-v1-
+            # NODE CACHE
+            # - restore_cache:
+            #     keys:
+            #       - node-v3-{{ checksum "package.json" }}
+            #       - node-v3-
+            # - run: yarn install
+            # - save_cache:
+            #     key: node-v3-{{ checksum "package.json" }}
+            #     paths:
+            #       - ~/project/node_modules
+            #       - ~/.yarn
 
-      # - restore_cache:
-      #     keys:
-      #     # "composer.lock" can be used if it is committed to the repo
-      #     - v1-dependencies-{{ checksum "composer.json" }}
-      #     # fallback to using the latest cache if no exact match is found
-      #     - v1-dependencies-
 
-      - run: composer install -n --prefer-dist
+            # prepare/wait for the database
+            - run:
+                name: Wait for DB
+                command: dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
+            - run: php artisan migrate --force
+            # - run:
+            #     name: Create Mysql Database
+            #     command: mysql  -h 127.0.0.1 -u root -e "CREATE DATABASE circleci;"
 
-      # - save_cache:
-      #     key: composer-v1-{{ checksum "composer.lock" }}
-      #     paths:
-      #       - ~/project
 
-      # node cache
+            # RUN TESTS (phpunit or codecept)
 
-      # - restore_cache:
-      #     keys:
-      #       - node-v3-{{ checksum "package.json" }}
-      #       - node-v3-
-      # - run: yarn install
-      # - save_cache:
-      #     key: node-v3-{{ checksum "package.json" }}
-      #     paths:
-      #       - ~/project/node_modules
-      #       - ~/.yarn
+            - run: mkdir -p build/logs
+            # - run: php ./vendor/bin/phpunit
+            - run: php ./vendor/bin/codecept build
+            - run: php ./vendor/bin/codecept run tests/ --xml results.xml
 
-      # prepare/wait for the database
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
-      - run: php artisan migrate --force
-
-      # - run:
-      #     name: Create Mysql Database
-      #     command: mysql  -h 127.0.0.1 -u root -e "CREATE DATABASE circleci;"
-
-      # run tests with phpunit or codecept
-
-      - run: mkdir -p build/logs
-      # - run: php ./vendor/bin/phpunit
-      - run: php ./vendor/bin/codecept build
-      - run: php ./vendor/bin/codecept run tests/ --xml results.xml
-
-      - store_test_results:
-          path: tests/_output
-      - store_artifacts:
-          path: tests/_output
+            - store_test_results:
+                path: tests/_output
+            - store_artifacts:
+                path: tests/_output
