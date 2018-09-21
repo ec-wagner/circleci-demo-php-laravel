@@ -105,7 +105,7 @@ jobs:
       # run tests with phpunit or codecept
 
       - run: mkdir -p build/logs
-      # - run: php ./vendor/bin/phpunit
+      - run: php ./vendor/bin/phpunit
       - run: php ./vendor/bin/codecept build
       - run: php ./vendor/bin/codecept run tests/ --xml results.xml
 

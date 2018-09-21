@@ -4,7 +4,7 @@
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
-class UserTest extends \Codeception\Test\Test
+class UserTest extends \Codeception\TestCase\Test
 {
     /**
      * @var \UnitTester
