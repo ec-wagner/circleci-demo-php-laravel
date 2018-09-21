@@ -12,11 +12,11 @@ class CustomValidationCest
             'updated_at' => new DateTime()
         ]);
     }
-    
+
     public function testCustomValidationSuccess(FunctionalTester $I)
     {
         $I->amOnPage('validation?postal_code=1234AB&post_id=1');
-        $I->see('Validation success');
+        $I->see('The selected post id is invalid');
     }
 
     public function testCustomValidationError(FunctionalTester $I)
