@@ -15,7 +15,7 @@ jobs:
     docker:
       # Specify the version you desire here
       # - image: circleci/php:7.2.10-apache-node-browsers
-      - image: circleci/mysql:8.0.12
+      - image: circleci/mysql:8
         # environment:
         #   MYSQL_HOST: 127.0.0.1
         #   MYSQL_DATABASE: circle_test
@@ -46,7 +46,8 @@ jobs:
     # working_directory: ~/laravel
 
     steps:
-      - checkout
+        - run: echo "HALL PHP"
+      # - checkout
       # - run: sudo apt install -y mysql-client
       # # - run: sudo apt install -y libsqlite3-dev zlib1g-dev
       # # - run: sudo docker-php-ext-install zip
