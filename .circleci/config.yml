@@ -73,7 +73,6 @@ jobs:
       #     - v1-dependencies-
 
       - run: composer install -n --prefer-dist
-      # - run: composer install --dev --ignore-platform-reqs
 
       # - save_cache:
       #     key: composer-v1-{{ checksum "composer.lock" }}
@@ -93,27 +92,24 @@ jobs:
       #       - ~/project/node_modules
       #       - ~/.yarn
 
-      # prepare the database
+      # prepare/wait for the database
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
+      - run: php artisan migrate --force
 
       # - run:
       #     name: Create Mysql Database
-      #     command: mysql  -h 127.0.0.1 -u root -e "create database circleci2;"
+      #     command: mysql  -h 127.0.0.1 -u root -e "CREATE DATABASE circleci;"
 
+      # run tests with phpunit or codecept
 
-      # - run: php artisan migrate
-      # - run: mkdir -p build/logs
-      # - run: php vendor/bin/phpunit tests/ --coverage-clover build/logs/clover.xml
-      # - run: php vendor/bin/phpcbf --standard=ruleset.xml app/
-      # - run: php vendor/bin/phpcs --standard=ruleset.xml app/
-
-      # # run tests with phpunit or codecept
-      # #- run: ./vendor/bin/phpunit
-      # - run: ./vendor/bin/codecept build
-      # - run: ./vendor/bin/codecept run --xml result.xml
-      # - store_test_results:
-      #     path: tests/_output
-      # - store_artifacts:
-      #     path: tests/_output
+      - run: mkdir -p build/logs
+      - run: php ./vendor/bin/phpunit
+      - run: php ./vendor/bin/codecept build
+      - run: php ./vendor/bin/codecept run tests/ --xml results.xml
+      
+      - store_test_results:
+          path: tests/_output
+      - store_artifacts:
+          path: tests/_output
